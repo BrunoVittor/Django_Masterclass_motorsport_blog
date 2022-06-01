@@ -15,6 +15,9 @@ class Category(models.Model):
 	def __str__(self):
 		return str(self.title)
 
+	def post_count(self):
+		return self.posts.all().count()
+
 
 class SportCars(models.Model):
 	model_car = models.CharField(max_length=200)
@@ -24,7 +27,7 @@ class SportCars(models.Model):
 	data = models.DateTimeField(auto_now_add=True)
 	image_car = models.ImageField(null=True, blank=True, upload_to='images')
 	slug = models.SlugField(default='slug', editable=False)
-	category = models.ForeignKey(Category, on_delete=models.CASCADE, default=1)
+	category = models.ForeignKey(Category, on_delete=models.CASCADE, default=1, related_name="posts")
 
 	def save(self, *args, **kwargs):
 		self.slug = slugify(self.model_car)
