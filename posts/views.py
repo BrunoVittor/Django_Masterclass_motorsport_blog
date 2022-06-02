@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import TemplateView, ListView, DetailView
-from .models import SportCars, Category
+from .models import SportCars, Category, Tag
 
 
 class IndexView(ListView):
@@ -37,4 +37,20 @@ class CategoryDetailView(ListView):
         context = super(CategoryDetailView, self).get_context_data(**kwargs)
         self.category = get_object_or_404(Category, pk=self.kwargs['pk'])
         context['category'] = self.category
+        return context
+
+
+class TagDetailView(ListView):
+    model = SportCars
+    template_name = 'tags/tag_detail.html'
+    context_object_name = 'posts'
+
+    def get_queryset(self):
+        self.tag = get_object_or_404(Tag, slug=self.kwargs['slug'])
+        return SportCars.objects.filter(tag=self.tag).order_by('id')
+
+    def get_context_data(self, **kwargs):
+        context = super(TagDetailView, self).get_context_data(**kwargs)
+        self.Tag = get_object_or_404(Tag, slug=self.kwargs['slug'])
+        context['tag'] = self.tag
         return context
